@@ -258,5 +258,5 @@ const bar = document.querySelector(".progress"),
 addEventListener("scroll", () => {
   const h = root.scrollHeight - innerHeight;
   bar.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
-  fc.classList.toggle("on", scrollY > innerHeight * 0.8 && scrollY < h - innerHeight * 0.9);
+  if (fc) fc.classList.toggle("on", scrollY > innerHeight * 0.8 && scrollY < h - innerHeight * 0.9);
 }, { passive: true });

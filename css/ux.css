@@ -1,0 +1,122 @@
+/* OptiFlow · ux.css — sistema de espaciado 8pt, contenedores, jerarquía y contraste.
+   Se carga al final: corrige la rejilla sin tocar animaciones ni scripts. */
+:root{
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;   /* escala 8pt */
+  --container:1200px;--measure:62ch;--radius-card:24px;
+  --section-y:clamp(56px,8vw,96px);          /* ritmo vertical entre secciones */
+  --gutter:clamp(20px,4vw,32px);
+  --card-pad:clamp(24px,3vw,32px);
+  --muted-aa:#51668c;                         /* 5.6:1 sobre blanco, 4.9:1 sobre celeste */
+  --blue-aa:#1f55b8;                          /* azul de texto sobre pastel (≥ 6:1) */
+}
+:root[data-theme=dark]{--muted-aa:#a9bbdc;--blue-aa:#8fb6ff}
+
+/* 1 ─ CONTENEDOR Y RETÍCULA */
+.wrap{width:min(var(--container),calc(100% - 2*var(--gutter)))}
+.band .block{padding:var(--section-y) 0}                 /* simétrico arriba/abajo */
+.center{max-width:720px;margin:0 auto var(--s5)}          /* encabezado → contenido: 48px */
+#beneficios .center{margin-bottom:var(--s5)}
+.center .lead,.hero-card p{max-width:var(--measure);margin-inline:auto}
+.stats,.grid-3,.plans,.split,.team-top,.team-bottom{gap:var(--s3)}  /* una sola separación: 24px */
+.banner{margin-top:var(--s3)}
+.card:not(.plan),.member,.review{border-radius:var(--radius-card)}
+.plan{border-radius:28px}
+.stat,.split .card,.benefit,.member,.review{padding:var(--card-pad)}   /* un solo padding de tarjeta */
+.benefit h3,.split h3{margin-top:var(--s2)}
+.benefit p,.split p,.member p,.review blockquote{margin-top:var(--s1)}
+.faq{max-width:760px;margin-inline:auto;display:grid;gap:var(--s2)}
+.faq summary{padding:var(--s2) var(--s3)}
+.faq details>p{padding:0 var(--s3) var(--s3)}
+section[id],[id=inicio]{scroll-margin-top:88px}           /* el ancla no queda bajo el header fijo */
+
+/* 2 ─ HERO: la acción principal debe verse sin hacer scroll */
+.hero{gap:var(--s5);padding:var(--s5) 0 var(--s6)}
+.hero-card{padding:clamp(28px,3.4vw,40px);border-radius:24px}
+.hero-card h2{line-height:1.12;letter-spacing:-.03em}
+.hero-eyebrow{margin:0 0 var(--s2)!important;color:var(--blue-aa);font:700 13px var(--font-main);letter-spacing:.08em;text-transform:uppercase}
+.hero-card p{margin-top:var(--s2)}
+.hero-card .hero-actions{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
+.hero-card .btn,.hero-card .hero-actions .btn{margin-top:0}
+.hero-card .hero-actions .btn:first-child{flex:1 1 220px;min-height:52px;font-size:1.05rem;box-shadow:0 10px 24px rgba(47,111,228,.32)} /* CTA primario dominante (Fitts) */
+.hero-card .hero-actions .btn-outline{flex:0 1 auto;min-height:52px}
+.hero-points{margin-top:var(--s3)}
+.trust{margin-top:var(--s2);font-size:14px}
+
+/* 3 ─ JERARQUÍA TIPOGRÁFICA */
+h1{font-size:clamp(38px,5.4vw,64px);line-height:1.04;letter-spacing:-.035em}
+.center h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15}
+.benefit h3,.split h3,.member h3{font-size:1.15rem;line-height:1.3}
+.card p,.review blockquote{font-size:1rem;line-height:1.65}
+.kicker{color:var(--blue-aa)}
+
+/* 4 ─ CONTRASTE (WCAG AA) y tamaño mínimo de texto */
+.review small,.member .role,.lead,.trust,.muted,.stat p,.split p,.benefit p,.member p{color:var(--muted-aa)}
+.review small,.chip:not(.plan .chip),.term,.legal-links{font-size:max(12.5px,.8rem)}
+.chip{padding:4px 10px;font-weight:700}
+.plan:not(.plan-hot) li{color:var(--ink);opacity:.9}
+
+/* Protección de Planes (evitar texto negro en Profesional) */
+.plan-hot,
+.plan-hot > p,
+.plan-hot .price,
+.plan-hot .price b,
+.plan-hot .price small,
+.plan-hot li{
+  color:rgba(255,255,255,.92)!important;
+}
+.plan-hot .cycle{color:#9ec0ff!important}
+.plan-hot li::before{
+  border-color:#7eb6ff!important;
+  background:radial-gradient(circle at 50% 60%,transparent 0 3px,#7eb6ff 3.5px 5px,transparent 5.5px)!important;
+}
+
+/* Protección del Banner CTA (evitar botón circular gigante) */
+.cta .cta-actions{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:12px!important;
+  align-items:stretch!important;
+  margin:0!important;
+}
+.cta .cta-actions .btn{
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-height:46px!important;
+  height:auto!important;
+  padding:12px 24px!important;
+  border-radius:999px!important;
+  font-size:15px!important;
+  box-shadow:none!important;
+}
+
+/* 5 ─ FORMULARIO (menos fricción) */
+.modal form,.modal label{display:grid;gap:var(--s1)}
+.modal form{gap:var(--s2)}
+.modal input,.modal textarea{min-height:48px;font-size:16px}   /* 16px evita el zoom en iOS */
+
+/* 6 ─ MÓVIL: titular + CTA dentro del primer pantallazo */
+@media(max-width:859px){
+  .hero{gap:var(--s3);padding:var(--s3) 0 var(--s5)}
+  .visual{min-height:0!important}
+  .stage{height:clamp(220px,52vw,320px)!important;min-height:0!important}
+  .hero-card{padding:var(--s3)}
+  .hero-card .hero-actions .btn{flex:1 1 100%}
+  .hero-points{gap:var(--s1)}
+}
+@media(max-width:560px){.band .block{padding:var(--s6) 0}.center{margin-bottom:var(--s4)}}
+
+/* Alineación: titular, logo y secciones comparten el mismo borde izquierdo */
+.visual h1{padding:var(--s3) 0 0;max-width:min(560px,100%);font-size:clamp(36px,4.6vw,56px)}
+@media(max-width:859px){.visual h1{padding-top:var(--s2)}}
+
+/* Restauración de fondos blancos y banner informativo */
+.band-plain{background:#fff!important}
+.banner{
+  background:var(--deep)!important;
+  color:#fff!important;
+}
+.banner h3{color:#fff!important}
+.banner p{color:rgba(255,255,255,.88)!important}
+
+/* Ocultar botón flotante de descargar APK */
+.float-cta{display:none!important}

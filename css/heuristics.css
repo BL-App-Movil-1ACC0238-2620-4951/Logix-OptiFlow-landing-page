@@ -1,4 +1,4 @@
-/* OptiFlow · capa de heurísticas de usabilidad (Nielsen) + patrón Z. */
+/* OptiFlow ┬À capa de heur├¡sticas de usabilidad (Nielsen) + patr├│n Z. */
 :root {
   --p-sky: #dbeafe;
   --p-peri: #e3e8ff;
@@ -51,7 +51,7 @@ small {
   color: var(--muted);
 }
 
-/* Áreas táctiles mínimas (44px) */
+/* ├üreas t├íctiles m├¡nimas (44px) */
 .btn {
   min-height: 44px;
   padding: 12px 20px;
@@ -69,7 +69,7 @@ small {
   align-items: center;
 }
 
-/* H4 consistencia: jerarquía de botones (primario relleno · secundario contorno) */
+/* H4 consistencia: jerarqu├¡a de botones (primario relleno ┬À secundario contorno) */
 .btn-outline {
   background: #fff;
   color: var(--ink);
@@ -94,7 +94,7 @@ small {
   color: var(--deep);
 }
 
-/* ───────── TÍTULOS CON DISEÑO ───────── */
+/* ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ T├ìTULOS CON DISE├æO ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */
 .kicker {
   display: flex;
   width: fit-content;
@@ -161,7 +161,7 @@ small {
   background: none;
 }
 
-/* Iconos de kickers para cada sección */
+/* Iconos de kickers para cada secci├│n */
 section[aria-labelledby="impacto-title"] .kicker {
   --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%2020v-6M10%2020V6M16%2020v-9M21%2020H3'/%3E%3C/svg%3E");
 }
@@ -195,7 +195,7 @@ section[aria-labelledby="impacto-title"] .kicker {
   opacity: 0.82;
 }
 
-/* Etiquetas de términos ópticos */
+/* Etiquetas de t├®rminos ├│pticos */
 .term {
   display: inline-block;
   margin-top: 14px;
@@ -248,10 +248,10 @@ section[aria-labelledby="impacto-title"] .kicker {
   color: var(--ink);
 }
 
-/* ───────── PATRÓN Z ─────────
-   1) Barra superior: logo (izq) → acciones (der)
-   2) Diagonal: titular + lentes (izq) → tarjeta con CTA (der)
-   3) Base: texto final (izq) → botones (der) */
+/* ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ PATR├ôN Z ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+   1) Barra superior: logo (izq) ÔåÆ acciones (der)
+   2) Diagonal: titular + lentes (izq) ÔåÆ tarjeta con CTA (der)
+   3) Base: texto final (izq) ÔåÆ botones (der) */
 @media (min-width: 900px) {
   .hero {
     grid-template-columns: 1.15fr 1fr;
@@ -296,7 +296,7 @@ section[aria-labelledby="impacto-title"] .kicker {
   padding-block: clamp(52px, 7vw, 84px);
 }
 
-/* H1 visibilidad del estado: ancla activa más clara */
+/* H1 visibilidad del estado: ancla activa m├ís clara */
 .nav-links a[aria-current="location"] {
   box-shadow: inset 0 -3px 0 var(--blue);
 }
@@ -328,89 +328,4 @@ section[aria-labelledby="impacto-title"] .kicker {
 .hero-card .kicker,
 .cta > p.kicker {
   margin-inline: 0;
-}
-
-
-/* ───────── FONDOS DEGRADADOS SUAVES (sin patrones geométricos) ───────── */
-/* Limpieza estricta de patrones en tarjetas y secciones */
-.card,
-.plan:not(.plan-hot),
-.faq details,
-.banner,
-.hero-card,
-.member,
-.review {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  background-color: var(--card) !important;
-  background-image: none !important;
-}
-
-.card::before,
-.plan:not(.plan-hot)::before,
-.faq details::before,
-.hero-card::before,
-.member::before,
-.review::before {
-  display: none !important;
-  content: none !important;
-}
-
-/* Degradados elegantes y fluidos por sección (Modo Claro) */
-.hero-band {
-  background: linear-gradient(180deg, #edf5fd 0%, #e2eefa 45%, #edf6fe 100%) !important;
-}
-section[aria-labelledby="impacto-title"] {
-  background: linear-gradient(180deg, #edf6fe 0%, #f6faff 50%, #edf4fd 100%) !important;
-}
-#nosotros {
-  background: linear-gradient(180deg, #edf4fd 0%, #e4effc 50%, #edf5fe 100%) !important;
-}
-#beneficios {
-  background: linear-gradient(180deg, #edf5fe 0%, #f7faff 50%, #ecf3fc 100%) !important;
-}
-#planes {
-  background: linear-gradient(180deg, #ecf3fc 0%, #e2eefb 50%, #ecf4fd 100%) !important;
-}
-#equipo {
-  background: linear-gradient(180deg, #ecf4fd 0%, #f8fbff 50%, #edf4fc 100%) !important;
-}
-#resenas {
-  background: linear-gradient(180deg, #edf4fc 0%, #e3effc 50%, #ecf4fc 100%) !important;
-}
-#faq {
-  background: linear-gradient(180deg, #ecf4fc 0%, #f8fbff 50%, #ebf3fb 100%) !important;
-}
-#contacto {
-  background: linear-gradient(180deg, #ebf3fb 0%, #e1edfa 100%) !important;
-}
-
-/* Degradados elegantes y fluidos por sección (Modo Oscuro) */
-:root[data-theme="dark"] .hero-band {
-  background: linear-gradient(180deg, #091a38 0%, #0d224a 45%, #0a1b38 100%) !important;
-}
-:root[data-theme="dark"] section[aria-labelledby="impacto-title"] {
-  background: linear-gradient(180deg, #0a1b38 0%, #08152e 50%, #0b1a37 100%) !important;
-}
-:root[data-theme="dark"] #nosotros {
-  background: linear-gradient(180deg, #0b1a37 0%, #0e244d 50%, #0b1b39 100%) !important;
-}
-:root[data-theme="dark"] #beneficios {
-  background: linear-gradient(180deg, #0b1b39 0%, #08162f 50%, #0c1c3c 100%) !important;
-}
-:root[data-theme="dark"] #planes {
-  background: linear-gradient(180deg, #0c1c3c 0%, #102652 50%, #0a1b38 100%) !important;
-}
-:root[data-theme="dark"] #equipo {
-  background: linear-gradient(180deg, #0a1b38 0%, #08152e 50%, #0b1b39 100%) !important;
-}
-:root[data-theme="dark"] #resenas {
-  background: linear-gradient(180deg, #0b1b39 0%, #0e234a 50%, #0b1a37 100%) !important;
-}
-:root[data-theme="dark"] #faq {
-  background: linear-gradient(180deg, #0b1a37 0%, #08152e 50%, #0a1a36 100%) !important;
-}
-:root[data-theme="dark"] #contacto {
-  background: linear-gradient(180deg, #0a1a36 0%, #08142c 100%) !important;
 }

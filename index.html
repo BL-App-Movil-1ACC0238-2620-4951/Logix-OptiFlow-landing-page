@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/polish.css" />
     <link rel="stylesheet" href="css/animations.css" />
     <link rel="stylesheet" href="css/heuristics.css" />
+    <link rel="stylesheet" href="css/ux.css" />
   </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -134,6 +135,7 @@
         </div>
         <div class="sheet">
           <article class="hero-card">
+            <p class="hero-eyebrow">Para ópticas y consultorios</p>
             <h2>Transforma la gestión de tu óptica con <span>OptiFlow</span></h2>
             <p>OptiFlow conecta pacientes con ópticas para reservar citas, seguir pedidos y mantener historiales clínicos.</p>
             <div class="hero-actions">
@@ -148,7 +150,7 @@
               <li>Receta digital (OD/OI)</li>
               <li>Órdenes a laboratorio</li>
             </ul>
-            <p class="trust">Sin tarjeta · Te respondemos en 24 horas</p>
+            <p class="trust">Sin tarjeta · Versión Android (APK)</p>
           </article>
         </div>
         </div>
@@ -623,16 +625,16 @@
           <small class="field-help" id="demo-whatsapp-help">Número peruano de 9 dígitos, con +51 opcional. Ej.: 987 654 321.</small>
           <small class="field-error" id="demo-whatsapp-error" aria-live="polite" hidden></small>
         </label>
-        <label>Correo
-          <input name="correo" type="email" autocomplete="email" aria-describedby="demo-correo-help demo-correo-error" required />
+        <label>Correo (opcional)
+          <input name="correo" type="email" autocomplete="email" aria-describedby="demo-correo-help demo-correo-error" />
           <small class="field-help" id="demo-correo-help">Ingresa tu correo de contacto. Ej.: ana@correo.com.</small>
           <small class="field-error" id="demo-correo-error" aria-live="polite" hidden></small>
         </label>
-        <label>¿Qué quieres ordenar primero?
-          <textarea name="mensaje" rows="3" placeholder="Citas, inventario, caja..." aria-describedby="demo-mensaje-help"></textarea>
+        <label>¿Qué quieres ordenar primero? (opcional)
+          <textarea name="mensaje" rows="3" placeholder="Citas, recetas, pedidos a laboratorio..." aria-describedby="demo-mensaje-help"></textarea>
           <small class="field-help" id="demo-mensaje-help">Opcional. Cuéntanos qué necesitas organizar: citas, inventario o seguimiento.</small>
         </label>
-        <button class="btn btn-navy" type="submit">Enviar solicitud</button>
+        <button class="btn btn-navy" type="submit">Quiero que me contacten</button>
       </form>
 
       <form id="panel-login" data-panel="login" hidden>
@@ -665,10 +667,6 @@
         <button class="btn btn-navy" type="button" data-close>Cerrar</button>
       </div>
     </dialog>
-    <a class="btn btn-blue float-cta" href="downloads/OptiFlow.apk" download>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16"/></svg>
-      Descargar APK
-    </a>
 
     <script type="importmap">
       {
