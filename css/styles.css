@@ -978,8 +978,7 @@ body.is-intro .nav {
   height: min(560px, 92vw);
   border-radius: 50%;
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 42%),
-    repeating-radial-gradient(circle, rgba(120, 186, 255, 0.16) 0 1px, transparent 1px 46px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, rgba(120, 186, 255, 0.18) 40%, rgba(47, 111, 228, 0.06) 65%, transparent 72%);
   animation: intro-ring 3.2s ease-in-out infinite;
 }
 .intro.is-playing .intro-glow {

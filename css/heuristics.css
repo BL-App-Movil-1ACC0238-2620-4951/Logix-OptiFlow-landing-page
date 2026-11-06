@@ -329,3 +329,88 @@ section[aria-labelledby="impacto-title"] .kicker {
 .cta > p.kicker {
   margin-inline: 0;
 }
+
+
+/* ───────── FONDOS DEGRADADOS SUAVES (sin patrones geométricos) ───────── */
+/* Limpieza estricta de patrones en tarjetas y secciones */
+.card,
+.plan:not(.plan-hot),
+.faq details,
+.banner,
+.hero-card,
+.member,
+.review {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: var(--card) !important;
+  background-image: none !important;
+}
+
+.card::before,
+.plan:not(.plan-hot)::before,
+.faq details::before,
+.hero-card::before,
+.member::before,
+.review::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Degradados elegantes y fluidos por sección (Modo Claro) */
+.hero-band {
+  background: linear-gradient(180deg, #edf5fd 0%, #e2eefa 45%, #edf6fe 100%) !important;
+}
+section[aria-labelledby="impacto-title"] {
+  background: linear-gradient(180deg, #edf6fe 0%, #f6faff 50%, #edf4fd 100%) !important;
+}
+#nosotros {
+  background: linear-gradient(180deg, #edf4fd 0%, #e4effc 50%, #edf5fe 100%) !important;
+}
+#beneficios {
+  background: linear-gradient(180deg, #edf5fe 0%, #f7faff 50%, #ecf3fc 100%) !important;
+}
+#planes {
+  background: linear-gradient(180deg, #ecf3fc 0%, #e2eefb 50%, #ecf4fd 100%) !important;
+}
+#equipo {
+  background: linear-gradient(180deg, #ecf4fd 0%, #f8fbff 50%, #edf4fc 100%) !important;
+}
+#resenas {
+  background: linear-gradient(180deg, #edf4fc 0%, #e3effc 50%, #ecf4fc 100%) !important;
+}
+#faq {
+  background: linear-gradient(180deg, #ecf4fc 0%, #f8fbff 50%, #ebf3fb 100%) !important;
+}
+#contacto {
+  background: linear-gradient(180deg, #ebf3fb 0%, #e1edfa 100%) !important;
+}
+
+/* Degradados elegantes y fluidos por sección (Modo Oscuro) */
+:root[data-theme="dark"] .hero-band {
+  background: linear-gradient(180deg, #091a38 0%, #0d224a 45%, #0a1b38 100%) !important;
+}
+:root[data-theme="dark"] section[aria-labelledby="impacto-title"] {
+  background: linear-gradient(180deg, #0a1b38 0%, #08152e 50%, #0b1a37 100%) !important;
+}
+:root[data-theme="dark"] #nosotros {
+  background: linear-gradient(180deg, #0b1a37 0%, #0e244d 50%, #0b1b39 100%) !important;
+}
+:root[data-theme="dark"] #beneficios {
+  background: linear-gradient(180deg, #0b1b39 0%, #08162f 50%, #0c1c3c 100%) !important;
+}
+:root[data-theme="dark"] #planes {
+  background: linear-gradient(180deg, #0c1c3c 0%, #102652 50%, #0a1b38 100%) !important;
+}
+:root[data-theme="dark"] #equipo {
+  background: linear-gradient(180deg, #0a1b38 0%, #08152e 50%, #0b1b39 100%) !important;
+}
+:root[data-theme="dark"] #resenas {
+  background: linear-gradient(180deg, #0b1b39 0%, #0e234a 50%, #0b1a37 100%) !important;
+}
+:root[data-theme="dark"] #faq {
+  background: linear-gradient(180deg, #0b1a37 0%, #08152e 50%, #0a1a36 100%) !important;
+}
+:root[data-theme="dark"] #contacto {
+  background: linear-gradient(180deg, #0a1a36 0%, #08142c 100%) !important;
+}
