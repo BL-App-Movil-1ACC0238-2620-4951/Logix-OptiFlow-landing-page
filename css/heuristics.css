@@ -1,0 +1,331 @@
+/* OptiFlow · capa de heurísticas de usabilidad (Nielsen) + patrón Z. */
+:root {
+  --p-sky: #dbeafe;
+  --p-peri: #e3e8ff;
+  --p-mint: #dcf4ef;
+  --p-lilac: #ebe6fb;
+  --p-ice: #eaf5fb;
+  --title-a: #0d2a5c;
+  --title-b: #2f6fe4;
+}
+:root[data-theme="dark"] {
+  --p-sky: #152a55;
+  --p-peri: #18265a;
+  --p-mint: #0f2d3a;
+  --p-lilac: #211f4f;
+  --p-ice: #102842;
+  --title-a: #e6eeff;
+  --title-b: #8fb6ff;
+}
+
+/* H7 flexibilidad / accesibilidad: salto al contenido y foco visible */
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font: 600 14px var(--font-main);
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 12px;
+}
+body {
+  line-height: 1.55;
+}
+p,
+li,
+blockquote,
+small,
+label {
+  font-size: max(15px, 1.02em);
+}
+.muted,
+.trust,
+.role,
+small {
+  color: var(--muted);
+}
+
+/* Áreas táctiles mínimas (44px) */
+.btn {
+  min-height: 44px;
+  padding: 12px 20px;
+}
+.tool {
+  min-height: 44px;
+  min-width: 44px;
+}
+.menu-btn {
+  width: 46px;
+  height: 46px;
+}
+.faq summary {
+  min-height: 44px;
+  align-items: center;
+}
+
+/* H4 consistencia: jerarquía de botones (primario relleno · secundario contorno) */
+.btn-outline {
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid var(--blue);
+}
+.btn-outline:hover {
+  background: var(--p-sky);
+}
+.btn-features svg {
+  transition: transform 0.25s;
+}
+.btn-features:hover svg {
+  transform: rotate(90deg);
+}
+:root[data-theme="dark"] .btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--blue);
+}
+.btn-light.btn-features {
+  background: #fff;
+  color: var(--deep);
+}
+
+/* ───────── TÍTULOS CON DISEÑO ───────── */
+.kicker {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+  align-items: center;
+  gap: 8px;
+  margin-block: 0 12px;
+  padding: 6px 14px 6px 11px;
+  border-radius: 999px;
+  background: var(--p-sky);
+  border: 1px solid var(--line);
+  color: var(--blue);
+  font: 600 12.5px var(--font-main);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.kicker::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  box-shadow: none;
+  background: currentColor;
+  -webkit-mask: var(--ic) center/contain no-repeat;
+  mask: var(--ic) center/contain no-repeat;
+}
+.center h2,
+.cta h2 {
+  position: relative;
+  display: table;
+  margin-inline: auto;
+  padding-bottom: 18px;
+  background: linear-gradient(100deg, var(--title-a) 10%, var(--title-b) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.center h2::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 56px;
+  height: 3px;
+  border-radius: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--blue), var(--accent));
+}
+.center h2.eyebrow {
+  font-size: clamp(26px, 3.4vw, 36px);
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+.center .lead {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+.cta h2 {
+  -webkit-text-fill-color: #fff;
+  color: #fff;
+  background: none;
+}
+
+/* Iconos de kickers para cada sección */
+section[aria-labelledby="impacto-title"] .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%2020v-6M10%2020V6M16%2020v-9M21%2020H3'/%3E%3C/svg%3E");
+}
+#nosotros .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M2%2012s4-7%2010-7%2010%207%2010%207-4%207-10%207S2%2012%202%2012z'/%3E%3Ccircle%20cx='12'%20cy='12'%20r='3'/%3E%3C/svg%3E");
+}
+#beneficios .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='9'/%3E%3Cpath%20d='m8%2012%203%203%205-6'/%3E%3C/svg%3E");
+}
+#planes .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M3%2012V4h8l10%2010-8%208z'/%3E%3Ccircle%20cx='7.5'%20cy='8.5'%20r='1'/%3E%3C/svg%3E");
+}
+#equipo .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='9'%20cy='8'%20r='3.5'/%3E%3Cpath%20d='M2.5%2020a6.5%206.5%200%200%201%2013%200M16%204.6a3.5%203.5%200%200%201%200%206.8M18%2014.5a6.5%206.5%200%200%201%203.5%205.5'/%3E%3C/svg%3E");
+}
+#resenas .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%205h16v11H9l-5%204z'/%3E%3C/svg%3E");
+}
+#faq .kicker {
+  --ic: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='9'/%3E%3Cpath%20d='M9.5%209.5a2.5%202.5%200%201%201%203.5%202.3c-.7.4-1%20.9-1%201.7M12%2017h.01'/%3E%3C/svg%3E");
+}
+
+/* FAQ */
+.faq details[open] {
+  border-color: var(--blue);
+  box-shadow: var(--shadow);
+}
+.faq p {
+  font-size: 1rem;
+  color: var(--ink);
+  opacity: 0.82;
+}
+
+/* Etiquetas de términos ópticos */
+.term {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px dashed var(--blue);
+  color: var(--deep);
+  font: 600 12.5px var(--font-main);
+  line-height: 1.3;
+}
+:root[data-theme="dark"] .term {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
+}
+.benefit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.benefit .ico {
+  margin-bottom: 6px;
+}
+.benefit h3 {
+  margin-top: 10px;
+  font-size: 1.15rem;
+}
+.stat p {
+  font-size: 1rem;
+  color: var(--ink);
+  opacity: 0.85;
+}
+
+/* Puntos clave en el hero */
+.hero-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.hero-points li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--p-sky);
+  border: 1px solid var(--line);
+  color: var(--deep);
+  font: 600 13px var(--font-main);
+}
+:root[data-theme="dark"] .hero-points li {
+  color: var(--ink);
+}
+
+/* ───────── PATRÓN Z ─────────
+   1) Barra superior: logo (izq) → acciones (der)
+   2) Diagonal: titular + lentes (izq) → tarjeta con CTA (der)
+   3) Base: texto final (izq) → botones (der) */
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 40px;
+  }
+  .hero-card {
+    padding: 40px;
+  }
+  .cta {
+    display: grid;
+    grid-template-columns: 1.2fr auto;
+    grid-template-areas: "tag act" "ttl act";
+    align-items: center;
+    column-gap: 40px;
+    text-align: left;
+    padding: 48px 56px;
+  }
+  .cta > p {
+    grid-area: tag;
+  }
+  .cta > h2 {
+    grid-area: ttl;
+    margin-top: 6px;
+    padding-bottom: 0;
+  }
+  .cta .cta-actions {
+    grid-area: act;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0;
+  }
+  .cta .btn {
+    margin-top: 0;
+  }
+}
+.hero-actions .btn {
+  flex: 1 1 auto;
+}
+
+/* Secciones: espaciado vertical */
+.band {
+  padding-block: clamp(52px, 7vw, 84px);
+}
+
+/* H1 visibilidad del estado: ancla activa más clara */
+.nav-links a[aria-current="location"] {
+  box-shadow: inset 0 -3px 0 var(--blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-features svg {
+    transition: none;
+  }
+  .skip-link {
+    transition: none;
+  }
+}
+
+.cta h2 {
+  display: block;
+  margin-inline: 0;
+}
+.cta > p.kicker,
+.cta > p {
+  margin-inline: 0;
+}
+.plan-hot {
+  overflow: visible;
+}
+.plan-hot::before {
+  border-radius: inherit;
+  overflow: hidden;
+}
+.hero-card .kicker,
+.cta > p.kicker {
+  margin-inline: 0;
+}

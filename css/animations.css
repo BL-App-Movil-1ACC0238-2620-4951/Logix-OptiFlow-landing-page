@@ -1,0 +1,54 @@
+/* =========================================================
+   OptiFlow · animaciones (inspiradas en el landing de Flowboard)
+   Solo corren si el usuario NO pidió reducir movimiento.
+   ========================================================= */
+:root{--ease-out:cubic-bezier(.2,.7,.2,1);--ease-spring:cubic-bezier(.34,1.56,.64,1)}
+
+@media (prefers-reduced-motion:no-preference){
+
+  /* Entrada con dirección (se suma al .reveal que ya existe) */
+  .reveal[data-dir=left]:not(.is-visible){transform:translateX(-32px)}
+  .reveal[data-dir=right]:not(.is-visible){transform:translateX(32px)}
+  .reveal[data-dir=scale]:not(.is-visible){transform:scale(.94)}
+  /* Al terminar la entrada, quita el retardo para que el hover responda al instante */
+  .reveal.revealed{transition-delay:0s!important}
+
+  /* Hero: el contenido de la tarjeta aparece en cascada */
+  .js-anim .hero-card>*{opacity:0}
+  .js-anim .hero-card.is-visible>*{animation:fade-up .8s var(--ease-out) both}
+  .js-anim .hero-card.is-visible>:nth-child(1){animation-delay:.05s}
+  .js-anim .hero-card.is-visible>:nth-child(2){animation-delay:.15s}
+  .js-anim .hero-card.is-visible>:nth-child(3){animation-delay:.25s}
+  .js-anim .hero-card.is-visible>:nth-child(4){animation-delay:.35s}
+
+  /* Iconos con rebote al pasar el cursor */
+  .ico{transition:transform .3s var(--ease-spring)}
+  @media (hover:hover){
+    .benefit:hover .ico{transform:scale(1.08) rotate(-4deg)}
+    .btn-blue:hover,.btn-light:hover,.btn-navy:hover{transform:translateY(-2px)}
+  }
+
+  /* Insignia "Más popular" y botón APK flotante: pulso suave */
+  .popular{animation:soft-pulse 2.8s ease-in-out infinite}
+  .float-cta.on{animation:apk-pulse 3.2s ease-out 1.2s infinite}
+
+  /* Menú móvil, FAQ y ventana modal */
+  .nav-links.is-open{animation:menu-down .28s var(--ease-out)}
+  .faq details[open]>p{animation:fade-down-sm .3s var(--ease-out)}
+  .faq details{transition:box-shadow .25s ease,border-color .25s ease}
+  .faq details[open]{border-color:color-mix(in srgb,var(--blue) 45%,var(--line))}
+  .modal[open]{animation:pop-in .35s var(--ease-spring)}
+  .modal[open]::backdrop{animation:fade-in .3s ease}
+
+  /* Enlace activo del menú: subrayado que crece */
+  .nav-links a[href^="#"]{position:relative}
+  .nav-links a[aria-current=location]{transition:background .25s ease,color .25s ease}
+}
+
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes fade-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes fade-down-sm{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes pop-in{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes menu-down{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes soft-pulse{0%,100%{box-shadow:0 0 0 0 rgba(47,111,228,.35)}50%{box-shadow:0 0 0 8px rgba(47,111,228,0)}}
+@keyframes apk-pulse{0%{box-shadow:0 12px 30px rgba(13,42,92,.35),0 0 0 0 rgba(47,111,228,.5)}70%,100%{box-shadow:0 12px 30px rgba(13,42,92,.35),0 0 0 16px rgba(47,111,228,0)}}
