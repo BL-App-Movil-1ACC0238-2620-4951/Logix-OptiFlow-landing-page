@@ -1,2 +1,0 @@
-Coloca aqui el archivo OptiFlow.apk (downloads/OptiFlow.apk).
-Si pesa mas de 100 MB, subelo a un GitHub Release y cambia los href "downloads/OptiFlow.apk" de index.html por esa URL.
