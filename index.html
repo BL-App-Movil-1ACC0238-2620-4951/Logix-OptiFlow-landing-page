@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/animations.css" />
     <link rel="stylesheet" href="css/heuristics.css" />
     <link rel="stylesheet" href="css/ux.css" />
+    <link rel="stylesheet" href="css/fixes.css" />
   </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -605,7 +606,10 @@
       </div>
     </footer>
 
-    <dialog class="modal" id="modal">
+    <dialog class="modal" id="modal" aria-label="OptiFlow">
+      <button class="modal-close" type="button" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
       <form id="panel-demo" data-panel="demo">
         <p class="kicker">Demo</p>
         <h3>Solicita OptiFlow para tu óptica</h3>
@@ -668,6 +672,11 @@
       </div>
     </dialog>
 
+    <script>
+      if (location.protocol === "file:") {
+        console.warn("OptiFlow: abre la landing desde un servidor (Live Server, GitHub Pages…). Con doble clic (file://) el navegador bloquea js/glasses.js y los lentes 3D no aparecen.");
+      }
+    </script>
     <script type="importmap">
       {
         "imports": {

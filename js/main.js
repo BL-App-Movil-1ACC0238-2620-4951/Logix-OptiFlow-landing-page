@@ -5,6 +5,7 @@ const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const introTimers = [];
 const INTRO_BLINK_MS = 1400;
 let introVideoFrame = 0;
+let pageMotionStarted = false; // declarado arriba: endIntro() lo usa antes de llegar al final del archivo
 
 function stopIntroVideoRender() {
   if (introVideoFrame) {
@@ -125,7 +126,22 @@ function startIntroVideo() {
     if (introVideo.currentTime / duration > 0.5) intro.classList.add("is-open");
   };
 
+  let playbackStarted = false;
+  const fallBack = () => {
+    if (intro.dataset.done === "1" || intro.dataset.fallback === "1") return;
+    intro.dataset.fallback = "1";
+    introVideo.removeEventListener("timeupdate", onTimeUpdate);
+    stopIntroVideoRender();
+    clearIntroTimers();
+    intro.classList.remove("is-playing", "is-video-visible");
+    showIntroFallbackFrames();
+  };
+  introVideo.addEventListener("error", fallBack, { once: true });
+  // Con datos móviles lentos el video (20 MB) puede tardar: no dejar al usuario esperando.
+  queueIntroTimer(() => { if (!playbackStarted) fallBack(); }, 4500);
+
   const beginPlayback = () => {
+    playbackStarted = true;
     intro.classList.add("is-video-visible");
     introVideo.addEventListener("timeupdate", onTimeUpdate);
     introVideo.addEventListener("ended", finishIntroVideo, { once: true });
@@ -307,7 +323,16 @@ document.querySelectorAll("[data-open]").forEach((button) => {
 });
 
 modal.addEventListener("click", (event) => {
-  if (event.target === modal || event.target.closest("[data-close]")) modal.close();
+  if (event.target.closest("[data-close]")) {
+    modal.close();
+    return;
+  }
+  if (event.target !== modal) return;
+  const box = modal.getBoundingClientRect();
+  const outside =
+    event.clientX < box.left || event.clientX > box.right ||
+    event.clientY < box.top || event.clientY > box.bottom;
+  if (outside) modal.close();
 });
 
 const demoForm = modal.querySelector("#panel-demo");
@@ -426,8 +451,6 @@ document.querySelectorAll(".stat").forEach((stat) => {
     ? String(length - (length * percent) / 100)
     : String(length);
 });
-
-let pageMotionStarted = false;
 
 function motionNodes() {
   return document.querySelectorAll(

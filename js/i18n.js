@@ -178,6 +178,8 @@ const EN = {
   "Óptica": "Optical shop",
   "Correo": "Email",
   "¿Qué quieres ordenar primero?": "What do you want to organize first?",
+  "Correo (opcional)": "Email (optional)",
+  "¿Qué quieres ordenar primero? (opcional)": "What do you want to organize first? (optional)",
   "Enviar solicitud": "Send request",
   "Cerrar": "Close",
   "Contraseña": "Password",

@@ -59,12 +59,10 @@ const materials = {
   pinkCrystal: new THREE.MeshPhysicalMaterial({
     color: 0xe8a2b8,
     metalness: 0.1,
-    roughness: 0.1,
-    transmission: 0.75,
-    thickness: 0.5,
-    ior: 1.48,
+    roughness: 0.12,
+    clearcoat: 0.8,
     transparent: true,
-    opacity: 0.9
+    opacity: 0.88
   }),
   techCyan: new THREE.MeshPhysicalMaterial({
     color: 0x00b4d8,
@@ -73,13 +71,16 @@ const materials = {
     clearcoat: 0.4
   }),
   lensClear: new THREE.MeshPhysicalMaterial({
-    color: 0xf8fafc,
+    color: 0xcfe3ff,
     metalness: 0,
-    roughness: 0.04,
-    transmission: 0.96,
-    thickness: 0.35,
-    ior: 1.52,
-    transparent: true
+    roughness: 0.05,
+    clearcoat: 1,
+    clearcoatRoughness: 0.05,
+    envMapIntensity: 1.4,
+    transparent: true,
+    opacity: 0.3,
+    side: THREE.DoubleSide,
+    depthWrite: false
   })
 };
 
@@ -222,219 +223,235 @@ const glassesFactories = [
   createCyanAviatorGlasses
 ];
 
-// --- SISTEMA DE LENTES EN TODO O FONDO (AMPLO ALCANCE HORIZONTAL E VERTICAL) ---
+// --- LENTES CAYENDO ---------------------------------------------------------
+// Las posiciones se calculan según lo que la cámara realmente ve, así siempre
+// aparecen dentro del escenario (en móvil y en escritorio) y no fuera de cuadro.
 const fallingGlasses = [];
-const GLASSES_COUNT = reduce ? 4 : 10; // Incrementado o número para cubrir todo o fondo
+const isSmall = window.matchMedia("(max-width: 700px)").matches;
+const GLASSES_COUNT = reduce ? 4 : isSmall ? 6 : 9;
+const HIT_RADIUS = 1.25; // zona de clic generosa: los lentes giran y de canto son muy finos
 
-function resetGlasses(item) {
-  // Rango horizontal amplo (-14 a +14) para cubrir todo o ancho do fondo
-  item.position.x = (Math.random() - 0.5) * 16.0;
-  item.position.y = 5.5 + Math.random() * 5.0;
-  item.position.z = (Math.random() - 0.5) * 3.0;
+const view = { halfH: 3.6, halfW: 4 };
 
-  item.rotation.set(
-    Math.random() * Math.PI,
-    Math.random() * Math.PI,
-    Math.random() * Math.PI
-  );
+function updateView() {
+  view.halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
+  view.halfW = view.halfH * camera.aspect;
+}
 
-  item.userData.speedY = 0.01 + Math.random() * 0.018;
+function placeGlasses(item, { anywhere = false } = {}) {
+  if (reduce) anywhere = true; // sin movimiento: los lentes quedan a la vista (y se pueden tocar)
+  const margin = Math.min(1.2, view.halfW * 0.35);
+  item.position.x = (Math.random() * 2 - 1) * Math.max(0.5, view.halfW - margin);
+  item.position.y = anywhere
+    ? (Math.random() * 2 - 1) * view.halfH
+    : view.halfH + 1.2 + Math.random() * 2.5;
+  item.position.z = (Math.random() - 0.5) * 2.0;
+
+  item.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+  // unidades por segundo (independiente de los fps del equipo)
+  item.userData.speedY = 0.55 + Math.random() * 0.9;
   item.userData.rotSpeed = {
-    x: (Math.random() - 0.5) * 0.02,
-    y: (Math.random() - 0.5) * 0.025,
-    z: (Math.random() - 0.5) * 0.02
+    x: (Math.random() - 0.5) * 1.2,
+    y: (Math.random() - 0.5) * 1.5,
+    z: (Math.random() - 0.5) * 1.2
   };
-  
-  // Tamaños orixinais e equilibrados (0.85x a 1.25x)
-  item.scale.setScalar(0.85 + Math.random() * 0.4);
+  item.scale.setScalar((isSmall ? 0.7 : 0.85) + Math.random() * 0.35);
   item.visible = true;
 }
 
 for (let i = 0; i < GLASSES_COUNT; i++) {
-  const factory = glassesFactories[i % glassesFactories.length];
-  const model = factory();
+  const model = glassesFactories[i % glassesFactories.length]();
+  const hit = new THREE.Mesh(
+    new THREE.SphereGeometry(HIT_RADIUS, 10, 8),
+    new THREE.MeshBasicMaterial({ visible: false })
+  );
+  model.add(hit);
   model.userData = {};
-  resetGlasses(model);
-  model.position.y += i * 1.2;
   scene.add(model);
   fallingGlasses.push(model);
 }
 
-// --- EXPLOSIÓN E PARTÍCULAS ---
+// --- EXPLOSIÓN --------------------------------------------------------------
 const particles = [];
 const particleGroup = new THREE.Group();
 scene.add(particleGroup);
 
 const shardGeometries = [
-  new THREE.TetrahedronGeometry(0.1),
+  new THREE.TetrahedronGeometry(0.11),
   new THREE.BoxGeometry(0.1, 0.1, 0.1),
-  new THREE.OctahedronGeometry(0.08)
+  new THREE.OctahedronGeometry(0.09)
 ];
+const shardColors = [0xd4af37, 0x2563eb, 0xe8a2b8, 0x00b4d8, 0xffffff, 0x9ec0ff];
+const shardMaterials = shardColors.map(
+  (color) => new THREE.MeshStandardMaterial({ color, metalness: 0.5, roughness: 0.3, emissive: color, emissiveIntensity: 0.25 })
+);
 
-const particleMaterials = [
-  materials.gold,
-  materials.navy,
-  materials.pinkCrystal,
-  materials.techCyan,
-  new THREE.MeshBasicMaterial({ color: 0xffffff })
-];
+const shockGeom = new THREE.RingGeometry(0.18, 0.3, 40);
+const shockwaves = [];
 
 function createExplosion(position) {
-  const shardCount = reduce ? 20 : 40;
+  // onda de choque mirando a la cámara
+  const mat = new THREE.MeshBasicMaterial({ color: 0x6aa2ff, side: THREE.DoubleSide, transparent: true, opacity: 0.9, depthWrite: false });
+  const ring = new THREE.Mesh(shockGeom, mat);
+  ring.position.copy(position);
+  ring.position.z += 0.2;
+  scene.add(ring);
+  shockwaves.push({ mesh: ring, life: 1 });
 
-  const ringGeom = new THREE.RingGeometry(0.12, 0.25, 32);
-  const ringMat = new THREE.MeshBasicMaterial({
-    color: 0x2563eb,
-    side: THREE.DoubleSide,
-    transparent: true,
-    opacity: 0.95
-  });
-  const shockwave = new THREE.Mesh(ringGeom, ringMat);
-  shockwave.position.copy(position);
-  shockwave.rotation.x = Math.PI / 2;
-  scene.add(shockwave);
-
-  let shockScale = 1;
-  const expandShock = () => {
-    shockScale += 0.22;
-    shockwave.scale.setScalar(shockScale);
-    ringMat.opacity -= 0.05;
-    if (ringMat.opacity > 0) {
-      requestAnimationFrame(expandShock);
-    } else {
-      scene.remove(shockwave);
-      ringGeom.dispose();
-      ringMat.dispose();
-    }
-  };
-  expandShock();
-
+  const shardCount = reduce ? 16 : 36;
   for (let i = 0; i < shardCount; i++) {
-    const geom = shardGeometries[Math.floor(Math.random() * shardGeometries.length)];
-    const mat = particleMaterials[Math.floor(Math.random() * particleMaterials.length)];
-    const p = new THREE.Mesh(geom, mat);
-
+    const p = new THREE.Mesh(
+      shardGeometries[i % shardGeometries.length],
+      shardMaterials[Math.floor(Math.random() * shardMaterials.length)]
+    );
     p.position.copy(position);
     p.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
 
-    const speed = 0.09 + Math.random() * 0.15;
+    const speed = 3 + Math.random() * 6; // unidades por segundo
     const theta = Math.random() * Math.PI * 2;
     const phi = (Math.random() - 0.5) * Math.PI;
-
     p.userData = {
       velocity: new THREE.Vector3(
         speed * Math.cos(phi) * Math.cos(theta),
-        speed * Math.sin(phi) + 0.02,
+        speed * Math.sin(phi) + 1,
         speed * Math.cos(phi) * Math.sin(theta)
       ),
-      rotSpeed: new THREE.Vector3(
-        (Math.random() - 0.5) * 0.3,
-        (Math.random() - 0.5) * 0.3,
-        (Math.random() - 0.5) * 0.3
-      ),
-      life: 1.0,
-      decay: 0.02 + Math.random() * 0.02
+      spin: new THREE.Vector3((Math.random() - 0.5) * 14, (Math.random() - 0.5) * 14, (Math.random() - 0.5) * 14),
+      life: 1,
+      decay: 1.1 + Math.random() * 0.9 // vida por segundo
     };
-
     particleGroup.add(p);
     particles.push(p);
   }
 }
 
-// --- INTERACCIÓN CLICK (RAYCASTING) ---
+// --- CLIC / TOQUE -----------------------------------------------------------
 const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+const pointer = new THREE.Vector2();
+
+function pick(event) {
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return null;
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+
+  const hits = raycaster.intersectObjects(fallingGlasses.filter((g) => g.visible), true);
+  if (!hits.length) return null;
+  let node = hits[0].object;
+  while (node && !fallingGlasses.includes(node)) node = node.parent;
+  return node || null;
+}
+
+function popGlasses(item) {
+  const pos = new THREE.Vector3();
+  item.getWorldPosition(pos);
+  createExplosion(pos);
+  item.visible = false;
+  window.setTimeout(() => placeGlasses(item), 700);
+}
 
 stage.addEventListener("pointerdown", (event) => {
-  const rect = stage.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-
-  const visibleGlasses = fallingGlasses.filter((g) => g.visible);
-  const intersects = raycaster.intersectObjects(visibleGlasses, true);
-
-  if (intersects.length > 0) {
-    let hitObject = intersects[0].object;
-    while (hitObject.parent && !fallingGlasses.includes(hitObject)) {
-      hitObject = hitObject.parent;
-    }
-
-    if (fallingGlasses.includes(hitObject)) {
-      const hitPos = new THREE.Vector3();
-      hitObject.getWorldPosition(hitPos);
-
-      createExplosion(hitPos);
-
-      hitObject.visible = false;
-      setTimeout(() => resetGlasses(hitObject), 650);
-    }
-  }
+  if (event.button > 0) return;
+  const hit = pick(event);
+  if (hit) popGlasses(hit);
 });
 
 stage.addEventListener("pointermove", (event) => {
-  const rect = stage.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-  const visibleGlasses = fallingGlasses.filter((g) => g.visible);
-  const intersects = raycaster.intersectObjects(visibleGlasses, true);
-
-  stage.style.cursor = intersects.length > 0 ? "pointer" : "default";
+  if (event.pointerType === "touch") return;
+  stage.style.cursor = pick(event) ? "pointer" : "";
 });
+
+// --- TAMAÑO Y BUCLE ---------------------------------------------------------
+let firstLayout = true;
 
 function resize() {
   const width = stage.clientWidth;
   const height = stage.clientHeight;
-  const ratio = Math.min(window.devicePixelRatio, 2);
-  if (!width || !height) return;
+  if (!width || !height) return false;
 
-  if (canvas.width === Math.floor(width * ratio) && canvas.height === Math.floor(height * ratio)) return;
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  if (canvas.width === Math.floor(width * ratio) && canvas.height === Math.floor(height * ratio)) return true;
 
   renderer.setPixelRatio(ratio);
   renderer.setSize(width, height, false);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
+  updateView();
+
+  if (firstLayout) {
+    // al cargar, algunos lentes ya están a la vista y el resto cae desde arriba
+    fallingGlasses.forEach((g, i) => placeGlasses(g, { anywhere: i % 2 === 0 }));
+    firstLayout = false;
+  } else {
+    // si cambió el ancho, vuelve a meter dentro del cuadro los que quedaron fuera
+    fallingGlasses.forEach((g) => {
+      const limit = Math.max(0.5, view.halfW - 0.6);
+      g.position.x = THREE.MathUtils.clamp(g.position.x, -limit, limit);
+    });
+  }
+  return true;
 }
 
-function animate() {
-  resize();
+let running = true;
+let last = performance.now();
+
+function animate(now) {
+  requestAnimationFrame(animate);
+  if (!running) { last = now; return; }
+
+  const dt = Math.min((now - last) / 1000, 0.05);
+  last = now;
+  if (!resize()) return;
 
   fallingGlasses.forEach((item) => {
     if (!item.visible) return;
-
     if (!reduce) {
-      item.position.y -= item.userData.speedY;
-      item.rotation.x += item.userData.rotSpeed.x;
-      item.rotation.y += item.userData.rotSpeed.y;
-      item.rotation.z += item.userData.rotSpeed.z;
+      item.position.y -= item.userData.speedY * dt;
+      item.rotation.x += item.userData.rotSpeed.x * dt;
+      item.rotation.y += item.userData.rotSpeed.y * dt;
+      item.rotation.z += item.userData.rotSpeed.z * dt;
     }
-
-    if (item.position.y < -5.5) {
-      resetGlasses(item);
-    }
+    if (item.position.y < -view.halfH - 1.6) placeGlasses(item);
   });
 
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
-    p.position.add(p.userData.velocity);
-    p.rotation.x += p.userData.rotSpeed.x;
-    p.rotation.y += p.userData.rotSpeed.y;
-    p.userData.velocity.y -= 0.003;
-    p.userData.life -= p.userData.decay;
-    p.scale.setScalar(Math.max(0.001, p.userData.life));
-
-    if (p.userData.life <= 0) {
+    const u = p.userData;
+    p.position.addScaledVector(u.velocity, dt);
+    u.velocity.y -= 6 * dt;
+    p.rotation.x += u.spin.x * dt;
+    p.rotation.y += u.spin.y * dt;
+    u.life -= u.decay * dt;
+    p.scale.setScalar(Math.max(0.001, u.life));
+    if (u.life <= 0) {
       particleGroup.remove(p);
-      p.geometry.dispose();
       particles.splice(i, 1);
     }
   }
 
+  for (let i = shockwaves.length - 1; i >= 0; i--) {
+    const s = shockwaves[i];
+    s.life -= dt * 2.2;
+    s.mesh.scale.setScalar(1 + (1 - s.life) * 7);
+    s.mesh.material.opacity = Math.max(0, s.life) * 0.9;
+    if (s.life <= 0) {
+      scene.remove(s.mesh);
+      s.mesh.material.dispose();
+      shockwaves.splice(i, 1);
+    }
+  }
+
   renderer.render(scene, camera);
-  requestAnimationFrame(animate);
 }
 
-animate();
+// No gastar GPU/batería si el escenario no se ve o la pestaña está en segundo plano
+let stageVisible = true;
+const syncRunning = () => { running = stageVisible && !document.hidden; };
+if ("IntersectionObserver" in window) {
+  new IntersectionObserver(([entry]) => { stageVisible = entry.isIntersecting; syncRunning(); }).observe(stage);
+}
+document.addEventListener("visibilitychange", syncRunning);
+
+requestAnimationFrame(animate);

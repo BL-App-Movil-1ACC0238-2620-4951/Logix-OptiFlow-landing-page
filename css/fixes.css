@@ -1,0 +1,184 @@
+/* OptiFlow · fixes.css — se carga al final.
+   1) Sin desborde horizontal (responsive)  2) Fondos de sección en claro y oscuro
+   3) Formulario/modal: visibilidad de paneles y espaciado uniforme */
+
+/* ───────── 1 · RESPONSIVE: nada debe ensanchar la página ───────── */
+html { overflow-x: clip; }
+body { max-width: 100%; }
+/* Los destellos decorativos de cada sección (::before/::after) sobresalían del borde
+   derecho y ensanchaban toda la página en móvil. Se recortan dentro de su sección. */
+.band {
+  overflow: hidden;                /* respaldo para navegadores antiguos */
+}
+@supports (overflow: clip) {
+  .band { overflow: clip; }
+}
+img, svg, video, canvas { max-width: 100%; }
+
+/* ───────── 2 · FONDOS DE SECCIÓN (diseños intercalados) ─────────
+   · band-plain  → celeste cielo/cian + trama de puntos   (Impacto, Beneficios, Equipo, FAQ)
+   · band-tint   → azul periwinkle + cuadrícula fina      (Conócenos, Planes, Reseñas, Cierre)
+   El brillo cambia de lado de una sección a la siguiente (--gx / --gy). */
+:root {
+  --sky-a: rgba(56, 189, 248, 0.24);     /* celeste cielo */
+  --sky-b: rgba(103, 232, 249, 0.26);    /* cian claro */
+  --sky-dot: rgba(14, 165, 233, 0.20);
+  --sky-base-1: #f1fbff;
+  --sky-base-2: #dcf2fd;
+  --blue-glow: rgba(47, 111, 228, 0.17);
+  --blue-line: rgba(47, 111, 228, 0.075);
+  --blue-base-1: #e6eefc;
+  --blue-base-2: #d9e5fa;
+  --hero-bg:
+    radial-gradient(900px 480px at 88% 8%, rgba(56, 189, 248, 0.20), transparent 70%),
+    radial-gradient(700px 420px at 0% 92%, rgba(47, 111, 228, 0.12), transparent 70%),
+    linear-gradient(180deg, #f3f9ff 0%, #e6f3fe 100%);
+}
+:root[data-theme="dark"] {
+  --sky-a: rgba(56, 189, 248, 0.17);
+  --sky-b: rgba(34, 211, 238, 0.13);
+  --sky-dot: rgba(125, 211, 252, 0.11);
+  --sky-base-1: #0a1f33;
+  --sky-base-2: #0b2740;
+  --blue-glow: rgba(106, 162, 255, 0.13);
+  --blue-line: rgba(106, 162, 255, 0.07);
+  --blue-base-1: #0e1b3b;
+  --blue-base-2: #0c1832;
+  --hero-bg:
+    radial-gradient(900px 480px at 88% 8%, rgba(56, 189, 248, 0.16), transparent 70%),
+    radial-gradient(700px 420px at 0% 92%, rgba(106, 162, 255, 0.12), transparent 70%),
+    linear-gradient(180deg, #091330 0%, #0a1733 100%);
+}
+
+.band { --gx: 8%;  --gx2: 96%; --gy: 0%; --gy2: 100%; }
+/* alterna el lado del brillo entre secciones del mismo tipo */
+main > section:nth-of-type(4n)   { --gx: 94%; --gx2: 4%;  --gy: 6%;  --gy2: 96%; }
+main > section:nth-of-type(4n+1) { --gx: 92%; --gx2: 6%; }
+
+:root .band.band-plain {
+  background:
+    radial-gradient(780px 400px at var(--gx) var(--gy), var(--sky-a), transparent 70%),
+    radial-gradient(660px 360px at var(--gx2) var(--gy2), var(--sky-b), transparent 70%),
+    radial-gradient(var(--sky-dot) 1.3px, transparent 1.8px) 0 0 / 28px 28px,
+    linear-gradient(180deg, var(--sky-base-1) 0%, var(--sky-base-2) 100%);
+}
+:root .band.band-tint {
+  background:
+    radial-gradient(820px 380px at var(--gx) var(--gy), var(--blue-glow), transparent 68%),
+    radial-gradient(640px 360px at var(--gx2) var(--gy2), var(--sky-a), transparent 70%),
+    linear-gradient(var(--blue-line) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, var(--blue-line) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(180deg, var(--blue-base-1) 0%, var(--blue-base-2) 100%);
+}
+:root .hero-band { background: var(--hero-bg); }
+
+/* Títulos y cápsulas legibles sobre cualquier fondo */
+:root[data-theme="dark"] .center h2 { --title-a: #f1f6ff; --title-b: #9cc0ff; }
+:root .band-plain .kicker { background: rgba(255, 255, 255, 0.7); }
+:root[data-theme="dark"] .band-plain .kicker { background: rgba(125, 211, 252, 0.10); border-color: rgba(125, 211, 252, 0.28); }
+
+/* ───────── 3 · MODAL / FORMULARIO ───────── */
+/* Causa del formulario "que no abre / se ve duplicado": `.modal form { display: grid }`
+   anulaba el atributo [hidden], así que el login siempre aparecía debajo del demo. */
+.modal [hidden] { display: none !important; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s4);
+  background: var(--card);
+  color: var(--ink);
+}
+.modal:not([open]) { display: none; }
+.modal::backdrop { background: rgba(7, 20, 51, 0.62); backdrop-filter: blur(3px); }
+
+/* Un solo ritmo de espaciado: 16px entre bloques, 8px dentro de cada campo */
+.modal form,
+.modal [data-panel]:not([hidden]) {
+  display: grid;
+  gap: var(--s2);
+  margin: 0;
+}
+.modal form > *,
+.modal [data-panel] > * { margin: 0; }
+
+.modal .kicker {
+  margin: 0;
+  margin-inline: 0;
+  padding: 6px 14px;
+}
+.modal .kicker::before { display: none; }
+.modal h3 { margin: 0; padding-right: 40px; font-size: 1.5rem; line-height: 1.25; }
+.modal form > p,
+.modal [data-panel] > p { margin: 0; color: var(--muted-aa, var(--muted)); font-size: var(--fs-sm, 1rem); line-height: 1.6; }
+.modal .kicker + h3 { margin-top: calc(var(--s1) * -1); }
+.modal h3 + p { margin-top: calc(var(--s1) * -1); }
+
+.modal label {
+  display: grid;
+  gap: var(--s1);
+  margin: 0;
+  font-size: var(--fs-sm, 1rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.modal label input,
+.modal label textarea { width: 100%; margin: 0; }
+.modal textarea { min-height: 96px; resize: vertical; }
+.modal .field-help,
+.modal .field-error { display: block; margin: 0; font-size: var(--fs-xs, .875rem); font-weight: 400; line-height: 1.45; }
+.modal .field-help { color: var(--muted-aa, var(--muted)); }
+.modal .field-error { color: #d6455a; font-weight: 600; }
+:root[data-theme="dark"] .modal .field-error { color: #ff8a9a; }
+.modal .note { padding: 0; font-size: var(--fs-xs, .875rem); }
+.modal .btn { width: 100%; margin: var(--s1) 0 0; }
+
+.modal input,
+.modal textarea {
+  background: var(--surface-plain);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+}
+.modal input:focus-visible,
+.modal textarea:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; border-color: var(--blue); }
+
+.modal-close {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s2);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink);
+}
+.modal-close:hover { border-color: var(--blue); color: var(--blue); }
+.modal-close svg { width: 18px; height: 18px; }
+
+@media (max-width: 560px) {
+  .modal { padding: var(--s3); width: calc(100% - 24px); max-height: calc(100dvh - 24px); }
+  .modal-close { top: 12px; right: 12px; }
+}
+
+/* ───────── 4 · LENTES 3D ───────── */
+.stage { touch-action: pan-y; }
+/* En móvil el escenario medía 0 px de alto: `flex: 1` (flex-basis 0) ignoraba el `height`
+   de ux.css, así que el canvas no tenía área y los lentes nunca se veían ni se podían tocar. */
+@media (max-width: 859px) {
+  .visual { min-height: 0 !important; }
+  .stage {
+    flex: none !important;
+    height: clamp(260px, 72vw, 400px) !important;
+    min-height: 260px !important;
+  }
+}
