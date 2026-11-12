@@ -64,6 +64,11 @@ const EN = {
   "Sin tarjeta · Te respondemos en 24 horas": "No card needed · We reply within 24 hours",
   "Impacto medible en ópticas y consultorios": "Measurable impact for optical shops and clinics",
   "Resultados clínicos y operativos respaldados por datos reales de digitalización oftalmológica.": "Clinical and operational results backed by real ophthalmic digitization data.",
+  "Acerca del producto": "About the product",
+  "OptiFlow en acción": "OptiFlow in action",
+  "Conoce cómo OptiFlow ayuda a organizar citas, pacientes y órdenes de laboratorio desde una sola plataforma.": "See how OptiFlow helps organize appointments, patients and lab orders in one platform.",
+  "Ver About the Product en YouTube": "Watch About the Product on YouTube",
+  "Video del producto": "Product video",
   "Sin recordatorios": "No reminders",
   "Menos ausentismo": "Fewer no-shows",
   "Menos tiempo": "Less time",
@@ -128,6 +133,8 @@ const EN = {
   "Contactar ventas": "Contact sales",
 
   // --- EQUIPO ---
+  "Conoce al equipo en video": "Meet the team in video",
+  "Ver About the Team en YouTube": "Watch About the Team on YouTube",
   "Sexto ciclo de Ingeniería de Software. Conocimientos en C++, Lua, Python y Java. Orientado al pensamiento lógico y soluciones óptimas.": "Sixth-semester Software Engineering student. Knows C++, Lua, Python and Java. Focused on logical thinking and optimal solutions.",
   "Experiencia en Java, Python, HTML, CSS y bases de datos. Participación en proyectos frontend y backend. Apasionado por nuevas tecnologías.": "Experience in Java, Python, HTML, CSS and databases. Worked on frontend and backend projects. Passionate about new technologies.",
   "Conocimientos en Python, C++ y HTML. Comprometido con la ética, el trabajo en equipo y el desarrollo de soluciones de calidad.": "Knows Python, C++ and HTML. Committed to ethics, teamwork and quality solutions.",
@@ -237,6 +244,9 @@ function setLang(l) {
   const b = document.querySelector("#lang");
   if (b) b.querySelector("span").textContent = l === "en" ? "ES" : "EN";
   b?.setAttribute("aria-label", l === "en" ? "Cambiar a español" : "Switch to English");
+  document.querySelectorAll("iframe[data-title-es][data-title-en]").forEach(frame => {
+    frame.title = frame.dataset[l === "en" ? "titleEn" : "titleEs"];
+  });
 }
 
 function setTheme(t) {
